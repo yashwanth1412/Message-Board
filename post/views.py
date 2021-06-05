@@ -87,6 +87,7 @@ def delete_comment(request, comment_id, post_id):
     comment.delete()
     return redirect(reverse("post:view_post", args=(post_id,)))
 
+@login_required(login_url="users:login")
 def ajax_posts(request):
     posts =  Post.objects.all().order_by("-date_posted")
     temp = loader.get_template('post/ajax_posts.html')
@@ -95,3 +96,5 @@ def ajax_posts(request):
     }
     if request.is_ajax():
         return HttpResponse(temp.render(context, request), content_type='application/xhtml+xml')
+    
+    return redirect(reverse("post:index"))
