@@ -1,0 +1,36 @@
+{% extends "post/layout.html" %}
+
+{% block body %}
+    {% if index %} 
+        <a href="{% url 'post:add_post' %}">Add post</a>
+        <a href="{% url 'post:my_posts' %}">Your posts</a>
+        <a href="{% url 'users:index' %}">Home</a>
+    {% else %}
+        <a href="{% url 'post:index' %}">All Posts</a>
+    {% endif %}
+
+    <div class="post-container">
+        {% for post in posts %}
+            <a href="{% url 'post:view_post' post.id %}" class="post_link">
+                <div class="post">
+                    <h1 class="title"> {{ post.title }} </h1>
+                    <div class="author"> Posted by 
+                        {% if request.user == post.author %}
+                            You
+                        {% else %}
+                            {{ post.author.first_name}}
+                        {% endif %}
+                    </div>
+                    <div class="date"> {{ post.date_posted }} </div>
+                    <div class="content"> {{ post.content }} </div>
+                </div>
+            </a>
+            <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
+        {% empty %}
+            <div class="empty">
+                <h1> {{message}}</h1>
+                <a href="{% url 'post:add_post' %}">Add post</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

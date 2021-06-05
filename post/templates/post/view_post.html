@@ -1,0 +1,48 @@
+{% extends "post/layout.html" %}
+
+{% block body %}
+    {% if request.user == post.author %}
+        <a href="{% url 'post:delete_post' post.id %}">Delete</a>
+    {% endif %}
+    <div class="post-view">
+        <h1 class="title"> {{ post.title }} </h1>
+        <div class="author"> Posted by
+            {% if request.user == post.author %}
+                You
+            {% else %}
+                {{ post.author.first_name}}
+            {% endif %}
+        </div>
+        <div class="date"> {{ post.date_posted }} </div>
+        <div class="content"> {{ post.content }} </div>
+    </div>
+
+    <form add="{% url 'post:view_post' post.id %}" method="POST" class="comment-form">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Comment">
+    </form>
+
+    <div class="comments">
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-author">
+                {% if request.user == comment.user %}
+                    You
+                {% else %}
+                    {{ comment.user.first_name}}
+                {% endif %} 
+            </div>
+            <div class="comment-date">{{ comment.commented_on }} </div>
+            <div class="message"> {{ comment.message }} </div>
+            {% if request.user == comment.user %}
+                <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}">Delete</a>
+            {% endif %}
+        </div>
+        <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
+    {% empty %}
+        <div class="empty">No comments yet</div>
+    {% endfor %}
+    </div>
+    <a href="{% url 'post:index' %}">All Posts</a>
+{% endblock %}

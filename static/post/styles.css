@@ -1,0 +1,78 @@
+*{
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #d8ebe4;
+}
+
+.title, .date, .author{
+    display: inline-block;
+}
+
+.author{
+    position: absolute;
+    right: 60px;
+    margin-right: 12%;
+}
+
+.date{
+    position: absolute;
+    right: 0;
+    margin-right: 2%;
+}
+
+.post{
+    display: block;
+    color: black;
+    -webkit-margin-collapse: collapse;
+    margin-bottom: 10px;
+    padding: 10px 20px 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+.post-container{
+    position: relative;
+    margin: 0 10%;
+    background-color: whitesmoke;
+}
+
+.post:hover{
+    background-color: #d8e3e7;
+}
+
+.post_link{
+    text-decoration: none;
+    animation-name: example;
+    animation-duration: 4s;
+}
+
+label{
+    display: block;
+}
+
+input{
+    display: block;
+}
+
+.comments{
+    width: 80%;
+    padding: 20px;
+}
+
+@keyframes example {
+    0%  {
+        left: -100%;
+    }
+    25% {
+        left: -40%;
+    }
+    50% {
+        left: 0%;
+    }
+    75% {
+        
+    }
+    100% {left: auto;}
+}

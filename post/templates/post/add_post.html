@@ -1,0 +1,9 @@
+{% extends "post/layout.html" %}
+{% block body %}
+    <form add="{% url 'post:add_post' %}" method="POST">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Add">
+    </form>
+    <a href="{% url 'post:index' %}">My posts</a> 
+{% endblock %}

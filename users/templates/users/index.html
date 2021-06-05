@@ -1,0 +1,15 @@
+{% extends "users/layout.html" %}
+
+{% block body %}
+    <h1> Welcome, {{ request.user.first_name }}</h1>
+
+    {% if request.user.email %}
+        <ul>
+            <li>Email : {{ request.user.email }}</li> 
+        </ul>
+    {% endif %}
+
+    <a href="{% url 'users:logout' %}">LogOut</a>
+    <a href="{% url 'post:index' %}">All Posts</a>
+    <a href="{% url 'post:my_posts' %}">My Posts</a>
+{% endblock %}
