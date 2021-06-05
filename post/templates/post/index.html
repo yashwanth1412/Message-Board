@@ -33,4 +33,23 @@
             </div>
         {% endfor %}
     </div>
+
+    <script>
+        $(document).ready( ()=> {
+            console.log("{{posts}}")
+            setInterval(() => {
+                $.ajax({
+                    type: "GET",
+                    url : "{% url 'post:ajax_getPosts' %}",
+                    dataType: 'html',
+                    success: (response) => {
+                        $(".post-container").html(response)
+                    },
+                    error: (response) => {
+                        console.log("No data received")
+                    }
+                });
+            }, 10000);
+        })
+    </script>
 {% endblock %}

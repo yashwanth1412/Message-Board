@@ -1,7 +1,10 @@
+from django.http.response import HttpResponse
+from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
@@ -83,3 +86,12 @@ def delete_comment(request, comment_id, post_id):
     
     comment.delete()
     return redirect(reverse("post:view_post", args=(post_id,)))
+
+def ajax_posts(request):
+    posts =  Post.objects.all().order_by("-date_posted")
+    temp = loader.get_template('post/ajax_posts.html')
+    context = {
+        "posts" : posts
+    }
+    if request.is_ajax():
+        return HttpResponse(temp.render(context, request), content_type='application/xhtml+xml')

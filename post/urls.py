@@ -6,6 +6,7 @@ app_name = "post"
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("ajax/posts", views.ajax_posts, name="ajax_getPosts"),
     path("my_posts", views.my_posts, name="my_posts"),
     path("add", views.add_post, name="add_post"),
     path("<int:post_id>", views.view_post, name="view_post"),
