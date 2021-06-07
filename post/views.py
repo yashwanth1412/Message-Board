@@ -103,3 +103,17 @@ def ajax_posts(request):
         return HttpResponse(temp.render(context, request), content_type='application/xhtml+xml')
     
     return redirect(reverse("post:index"))
+
+@login_required(login_url="users:login")
+def ajax_comments(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    comments = post.comments.all().order_by("-commented_on")
+    temp = loader.get_template('post/ajax_comments.html')
+    context = {
+        "post" : post,
+        "comments" : comments
+    }
+    if request.is_ajax():
+        return HttpResponse(temp.render(context, request), content_type='application/xhtml+xml')
+    
+    return redirect(reverse("post:view_post", args=(post_id,)))
