@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
+from django.contrib import messages
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
@@ -37,8 +37,9 @@ def add_post(request):
             x = form.save(commit=False)
             x.author = request.user
             x.save()
+            messages.success(request, "Sucessfully added post")
             return redirect(reverse("post:index"))
-    
+        messages.error(request, "Error! adding post")
     else:
         form = PostForm()
     return render(request, "post/add_post.html", {
@@ -57,7 +58,9 @@ def view_post(request, post_id):
             x.user = request.user
             x.post = post
             x.save()
+            messages.success(request, "Sucessfully added comment")
             return redirect(reverse("post:view_post", args=(post_id,)))
+        messages.error(request, "Error! adding comment")
 
     else:
         form = CommentForm()
@@ -75,6 +78,7 @@ def delete_post(request, post_id):
         raise PermissionDenied
     
     post.delete()
+    messages.success(request, "Sucessfully deleted post")
     return redirect(reverse("post:index"))
 
 @login_required(login_url="users:login")
@@ -85,6 +89,7 @@ def delete_comment(request, comment_id, post_id):
 
     
     comment.delete()
+    messages.success(request, "Sucessfully deleted comment")
     return redirect(reverse("post:view_post", args=(post_id,)))
 
 @login_required(login_url="users:login")
