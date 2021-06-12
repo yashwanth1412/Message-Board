@@ -15,6 +15,16 @@
         </div>
         <div class="date"> {{ post.date_posted }} </div>
         <div class="content"> {{ post.content }} </div>
+        <div class="like"> {{ no_liked }}
+            <form method="POST" action="{% url 'post:like_post' post.id %}">
+                {% csrf_token %}
+                {% if request.user in liked_users %}
+                    <button type="submit" class="btn btn-danger"  value="unlike" name="type"> Unlike </button>
+                {% else %}
+                    <button type="submit" class="btn btn-success" value="like" name="type"> Like </button>
+                {% endif %}
+            </form>
+        </div>
     </div>
 
     <form add="{% url 'post:view_post' post.id %}" method="POST" class="comment-form">

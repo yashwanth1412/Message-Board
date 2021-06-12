@@ -50,7 +50,8 @@ def add_post(request):
 def view_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all().order_by("-commented_on")
-
+    liked_users = post.liked_users.all()
+    
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -68,7 +69,9 @@ def view_post(request, post_id):
     return render(request, "post/view_post.html", {
         "post" : post,
         "comments" : comments,
-        "form" : form 
+        "form" : form ,
+        "liked_users" : liked_users,
+        "no_liked" : len(liked_users)
     })  
 
 @login_required(login_url="users:login")
@@ -87,7 +90,6 @@ def delete_comment(request, comment_id, post_id):
     if comment not in request.user.comments.all():
         raise PermissionDenied
 
-    
     comment.delete()
     messages.success(request, "Sucessfully deleted comment")
     return redirect(reverse("post:view_post", args=(post_id,)))
@@ -117,3 +119,19 @@ def ajax_comments(request, post_id):
         return HttpResponse(temp.render(context, request), content_type='application/xhtml+xml')
     
     return redirect(reverse("post:view_post", args=(post_id,)))
+
+@login_required(login_url="users:login")
+def like_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    liked = post.liked_users.all()
+    
+    if request.method == "POST":
+        if(request.POST["type"]== 'like'):
+            if request.user not in liked:
+                post.liked_users.add(request.user)
+        else:
+            if request.user in liked:
+                post.liked_users.remove(request.user)
+            
+    return redirect(reverse("post:view_post", args=(post_id,)))
+
