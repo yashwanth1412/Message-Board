@@ -19,9 +19,11 @@
             <form method="POST" action="{% url 'post:like_post' post.id %}">
                 {% csrf_token %}
                 {% if request.user in liked_users %}
-                    <button type="submit" class="btn btn-danger"  value="unlike" name="type"> Unlike </button>
+                    <input type="hidden" value="unlike" name="type">
+                    <button type="submit" class="btn btn-danger"  value="like"> Unlike </button>
                 {% else %}
-                    <button type="submit" class="btn btn-success" value="like" name="type"> Like </button>
+                    <input type="hidden" value="like" name="type">
+                    <button type="submit" class="btn btn-success" value="like"> Like </button>
                 {% endif %}
             </form>
         </div>

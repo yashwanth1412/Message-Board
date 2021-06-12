@@ -22,9 +22,8 @@ def login_user(request):
             login(request, user)
             return redirect(reverse("users:index"))
         else:
-            return render(request, 'users/login.html', {
-                "message" : "Invalid Credentials"
-            })
+            messages.warning(request, 'Invalid credentials')
+            return render(request, 'users/login.html')
 
     return render(request, 'users/login.html')
 
