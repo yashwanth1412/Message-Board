@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-8t$zwn$-cs^3)rczy+p02vz-h9+zom21nw6hh=$qvy6_xf@t6p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'users',
     'post',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,6 +73,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'edxdjango.wsgi.application'
 
+###### ASGI config ######
+
+ASGI_APPLICATION = 'edxdjango.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default' : {
+        'BACKEND' : 'channels_redis.core.RedisChannelLayer',
+         'CONFIG' : {
+             'hosts' : [('127.0.0.1', '6379')],
+         },
+    },
+}
+
+###### ASGI config ######
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

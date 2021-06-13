@@ -10,7 +10,20 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
+from django.conf.urls import url
+from post.consumers import ChatConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'edxdjango.settings')
 
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+    'websocket': AllowedHostsOriginValidator(
+            AuthMiddlewareStack(
+                URLRouter([
+                    url("", ChatConsumer.as_asgi()),
+                ])
+            )
+        )
+    })

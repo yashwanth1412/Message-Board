@@ -35,6 +35,36 @@
     </div>
 
     <script>
+        var loc = window.location
+        var wsSrt = "ws://"
+        if(loc.protocol == "https:"){
+            wsSrt = "wss://"
+        }
+        var endpoint = wsSrt + loc.host + loc.pathname
+        var socket = new WebSocket(endpoint)
+
+        console.log(endpoint)
+
+        socket.onopen = (e) => {
+            console.log("open", e)
+        }
+
+        socket.onmessage = (e) => {
+            console.log("message", e)
+        }
+
+        socket.onerror = (e) => {
+            console.log("error", e)
+        }
+
+        socket.onclose = (e) => {
+            console.log("close", e)
+        }
+
+    </script>
+
+
+    <!-- <script>
         $(document).ready( ()=> {
             setInterval(() => {
                 $.ajax({
@@ -50,5 +80,6 @@
                 });
             }, 10000);
         })
-    </script>
+    </script> -->
+
 {% endblock %}

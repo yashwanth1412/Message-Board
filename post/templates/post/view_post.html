@@ -57,22 +57,23 @@
     {% endfor %}
     </div>
     <a href="{% url 'post:index' %}">All Posts</a>
+ 
+ <!-- <script>
+    $(document).ready( ()=> {
+        setInterval(() => {
+            $.ajax({
+                type: "GET",
+                url : "{% url 'post:ajax_getComments' post.id %}",
+                dataType: 'html',
+                success: (response) => {
+                    $(".comments").html(response)
+                },
+                error: (response) => {
+                    console.log("No data received")
+                }
+            });
+        }, 10000);
+    })
+</script> -->
 
-    <script>
-        $(document).ready( ()=> {
-            setInterval(() => {
-                $.ajax({
-                    type: "GET",
-                    url : "{% url 'post:ajax_getComments' post.id %}",
-                    dataType: 'html',
-                    success: (response) => {
-                        $(".comments").html(response)
-                    },
-                    error: (response) => {
-                        console.log("No data received")
-                    }
-                });
-            }, 10000);
-        })
-    </script>
 {% endblock %}
