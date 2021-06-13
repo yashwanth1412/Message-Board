@@ -12,11 +12,13 @@ from .forms import PostForm, CommentForm
 @login_required(login_url="users:login")
 def index(request):
     posts =  Post.objects.all().order_by("-date_posted")
-    
+    form = PostForm()
+
     return render(request, "post/index.html", {
         "posts" : posts,
         "message": "No posts yet!. Be the first one to post!!",
-        "index": True
+        "index": True,
+        "form" : form
     })
 
 @login_required(login_url="users:login")
@@ -51,7 +53,7 @@ def view_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all().order_by("-commented_on")
     liked_users = post.liked_users.all()
-    
+
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():

@@ -2,7 +2,13 @@
 
 {% block body %}
     {% if index %} 
-        <a href="{% url 'post:add_post' %}">Add post</a>
+
+        <form add="{% url 'post:add_post' %}" method="POST">
+            {% csrf_token %}
+            {{form}}
+            <input type="submit" value="Add">
+        </form>
+    
         <a href="{% url 'post:my_posts' %}">Your posts</a>
         <a href="{% url 'users:index' %}">Home</a>
     {% else %}
@@ -42,15 +48,35 @@
         }
         var endpoint = wsSrt + loc.host + loc.pathname
         var socket = new WebSocket(endpoint)
-
-        console.log(endpoint)
+        var form = $("form")
+        var title = $("#id_title")
+        var content = $("#id_content")
+        var post_container = $(".post-container")
 
         socket.onopen = (e) => {
-            console.log("open", e)
+            form.submit(e => {
+                e.preventDefault()
+                socket.send(JSON.stringify({
+                    'title' : title.val(),
+                    'content' : content.val()
+                }))
+
+                form.trigger("reset")
+            })
         }
 
         socket.onmessage = (e) => {
-            console.log("message", e)
+            $.ajax({
+                    type: "GET",
+                    url : "{% url 'post:ajax_getPosts' %}",
+                    dataType: 'html',
+                    success: (response) => {
+                        $(".post-container").html(response)
+                    },
+                    error: (response) => {
+                        console.log("No data received")
+                    }
+                });
         }
 
         socket.onerror = (e) => {
