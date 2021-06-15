@@ -46,7 +46,8 @@
         if(loc.protocol == "https:"){
             wsSrt = "wss://"
         }
-        var endpoint = wsSrt + loc.host + loc.pathname
+        var endpoint = wsSrt + loc.host + "/post"
+        console.log(endpoint)
         var socket = new WebSocket(endpoint)
         var form = $("form")
         var title = $("#id_title")
@@ -88,24 +89,5 @@
         }
 
     </script>
-
-
-    <!-- <script>
-        $(document).ready( ()=> {
-            setInterval(() => {
-                $.ajax({
-                    type: "GET",
-                    url : "{% url 'post:ajax_getPosts' %}",
-                    dataType: 'html',
-                    success: (response) => {
-                        $(".post-container").html(response)
-                    },
-                    error: (response) => {
-                        console.log("No data received")
-                    }
-                });
-            }, 10000);
-        })
-    </script> -->
 
 {% endblock %}

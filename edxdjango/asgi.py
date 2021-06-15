@@ -14,7 +14,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
 from django.conf.urls import url
-from post.consumers import ChatConsumer
+from post.consumers import ChatConsumer, CommentConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'edxdjango.settings')
 
@@ -22,7 +22,8 @@ application = ProtocolTypeRouter({
     'websocket': AllowedHostsOriginValidator(
             AuthMiddlewareStack(
                 URLRouter([
-                    url("", ChatConsumer.as_asgi()),
+                    url(r"comment/(?P<post_id>[0-9]+)", CommentConsumer.as_asgi()),
+                    url(r"post", ChatConsumer.as_asgi()),
                 ])
             )
         )

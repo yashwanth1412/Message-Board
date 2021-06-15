@@ -1,4 +1,4 @@
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -134,6 +134,17 @@ def like_post(request, post_id):
         else:
             if request.user in liked:
                 post.liked_users.remove(request.user)
-            
+
+        if request.is_ajax():
+            liked = post.liked_users.all()
+            temp = loader.get_template('post/ajax_like.html')
+            context = {
+                "post" : post,
+                "no_liked" : len(liked),
+                "liked_users" : liked 
+            }
+            return HttpResponse(temp.render(context, request))
+
+          
     return redirect(reverse("post:view_post", args=(post_id,)))
 

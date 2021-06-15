@@ -16,14 +16,14 @@
         <div class="date"> {{ post.date_posted }} </div>
         <div class="content"> {{ post.content }} </div>
         <div class="like"> {{ no_liked }}
-            <form method="POST" action="{% url 'post:like_post' post.id %}">
+            <form method="POST" action="{% url 'post:like_post' post.id %}" class="like_form">
                 {% csrf_token %}
                 {% if request.user in liked_users %}
-                    <input type="hidden" value="unlike" name="type">
-                    <button type="submit" class="btn btn-danger"  value="like"> Unlike </button>
+                    <input type="hidden" value="unlike" name="type" id="like_type">
+                    <button type="submit" class="btn btn-danger"> Unlike </button>
                 {% else %}
-                    <input type="hidden" value="like" name="type">
-                    <button type="submit" class="btn btn-success" value="like"> Like </button>
+                    <input type="hidden" value="like" name="type" id="like_type">
+                    <button type="submit" class="btn btn-success"> Like </button>
                 {% endif %}
             </form>
         </div>
@@ -57,10 +57,32 @@
     {% endfor %}
     </div>
     <a href="{% url 'post:index' %}">All Posts</a>
- 
- <!-- <script>
-    $(document).ready( ()=> {
-        setInterval(() => {
+
+    <script>
+        var loc = window.location
+        var wsSrt = "ws://"
+        if(loc.protocol == "https:"){
+            wsSrt = "wss://"
+        }
+        var endpoint = wsSrt + loc.host + "/comment/{{post.id}}"
+        
+        var socket = new WebSocket(endpoint)
+        var form = $(".comment-form")
+        var message = $("#id_message")
+        var comments_container = $(".comments")
+
+        socket.onopen = (e) => {
+            form.submit(e => {
+                e.preventDefault()
+                socket.send(JSON.stringify({
+                    'message' : message.val()
+                }))
+
+                form.trigger("reset")
+            })
+        }
+
+        socket.onmessage = (e) => {
             $.ajax({
                 type: "GET",
                 url : "{% url 'post:ajax_getComments' post.id %}",
@@ -71,9 +93,30 @@
                 error: (response) => {
                     console.log("No data received")
                 }
-            });
-        }, 10000);
-    })
-</script> -->
+            })
+        }
+
+        socket.onerror = (e) => {
+            console.log("error", e)
+        }
+
+        socket.onclose = (e) => {
+            console.log("close", e)
+        }
+
+        $(".like_form").submit(e => {
+            e.preventDefault()
+            
+            $.ajax({
+                method: "POST",
+                url: "{% url 'post:like_post' post.id %}",
+                data: $(".like_form").serialize()
+            })
+            .done(data => {
+                $(".like").html(data)
+            })
+        })
+
+    </script>
 
 {% endblock %}
