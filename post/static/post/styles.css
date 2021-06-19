@@ -17,9 +17,9 @@ body, .empty{
     transition: all 0.3s ease-in-out;
 }
 
-.post-view{
+/* .post-view{
     margin: 10px 5%;
-}
+} */
 
 .post-view:hover{
     cursor: default;
@@ -94,22 +94,42 @@ input{
 }
 
 .post_pic{
-    position: relative;
     height: 100%;
-    width: 10%;
+    width: 50%;
     background-size: contain;
     border-radius: 50%;
 }
 
 .details{
-    display: inline-block;
     font-weight: 500;
     font-size: .8em;
     margin: 1% 0;
 }
 
-.title{
+/* .title{
     display: inline-block;
     width: 80%;
     margin-left: 2%;
+} */
+
+.post_user, .post_content{
+    position: relative;
+    display: inline-block;
 }
+
+.post_user{
+    width: 25%;
+    text-align: center;
+}
+
+.post_content{
+    width: 70%;
+}
+
+.post, .post-view{
+    display: flex;
+    justify-content:flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+

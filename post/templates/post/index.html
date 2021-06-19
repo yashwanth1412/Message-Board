@@ -19,19 +19,23 @@
         {% for post in posts %}
             <a href="{% url 'post:view_post' post.id %}" class="post_link">
                 <div class="post">
-                    <img src="{{post.author.profile.profile_pic.url}}" class='post_pic'>
-                    <h1 class="title"> {{ post.title }} </h1>
-                    <div class="details">
-                        <div class="author"> Posted by 
-                            {% if request.user == post.author %}
-                                You
-                            {% else %}
-                                {{ post.author.first_name}}
-                            {% endif %}
+                    <div class="post_user">
+                        <img src="{{post.author.profile.profile_pic.url}}" class='post_pic'>
+                        <div class="details">
+                            <div class="author"> Posted by 
+                                {% if request.user == post.author %}
+                                    You
+                                {% else %}
+                                    {{ post.author.first_name}}
+                                {% endif %}
+                            </div>
+                            <div class="date"> {{ post.date_posted }} </div>
                         </div>
-                        <div class="date"> {{ post.date_posted }} </div>
                     </div>  
-                    <div class="content"> {{ post.content }} </div>
+                    <div class="post_content">
+                        <h1 class="title"> {{ post.title }} </h1>
+                        <div class="content"> {{ post.content }} </div>
+                    </div>
                 </div>
             </a>
             <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
