@@ -1,5 +1,9 @@
 {% for comment in comments %}
-        <div class="comment">
+    <div class="comment">
+        <div class="comment-user-info">
+            <img src="{{comment.user.profile.profile_pic.url}}" class='post_pic'>
+        </div>
+        <div>
             <div class="comment-author">
                 {% if request.user == comment.user %}
                     You
@@ -9,11 +13,15 @@
             </div>
             <div class="comment-date">{{ comment.commented_on }} </div>
             <div class="message"> {{ comment.message }} </div>
-            {% if request.user == comment.user %}
-                <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}">Delete</a>
-            {% endif %}
         </div>
-        <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
-    {% empty %}
-        <div class="empty">No comments yet</div>
-    {% endfor %}
+    </div>
+    <div class="delete-comment">
+        {% if request.user == comment.user %}
+            <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}">Delete</a>
+        {% endif %}
+    </div>
+    
+    <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
+{% empty %}
+    <div class="empty">No comments yet</div>
+{% endfor %}
