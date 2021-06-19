@@ -1,6 +1,6 @@
 {% extends "post/layout.html" %}
 
-{% block body %}
+{% block content %}
     {% if request.user == post.author %}
         <a href="{% url 'post:delete_post' post.id %}">Delete</a>
     {% endif %}

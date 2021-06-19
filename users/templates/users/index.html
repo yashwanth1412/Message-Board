@@ -1,6 +1,6 @@
-{% extends "users/layout.html" %}
+{% extends "post/layout.html" %}
 
-{% block body %}
+{% block content %}
     <h1> Welcome, {{ request.user.first_name }}</h1>
 
     {% if request.user.email %}
@@ -8,8 +8,4 @@
             <li>Email : {{ request.user.email }}</li> 
         </ul>
     {% endif %}
-
-    <a href="{% url 'users:logout' %}">LogOut</a>
-    <a href="{% url 'post:index' %}">All Posts</a>
-    <a href="{% url 'post:my_posts' %}">My Posts</a>
 {% endblock %}
