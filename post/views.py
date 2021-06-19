@@ -54,6 +54,9 @@ def view_post(request, post_id):
     comments = post.comments.all().order_by("-commented_on")
     liked_users = post.liked_users.all()
 
+    profile_pic = request.user.profile.profile_pic.url
+    print(profile_pic)
+
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():

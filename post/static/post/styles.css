@@ -7,24 +7,6 @@ body, .empty{
     background-color: #d8ebe4;
 }
 
-.title, .date, .author{
-    display: inline-block;
-}
-
-.author{
-    position: absolute;
-    right: 60px;
-    margin-right: 12%;
-    font-weight: 500;
-}
-
-.date{
-    position: absolute;
-    right: 0;
-    margin-right: 2%;
-    font-weight: 500;
-}
-
 .post, .post-view{
     display: block;
     color: black;
@@ -35,9 +17,9 @@ body, .empty{
     transition: all 0.3s ease-in-out;
 }
 
-.post-view{
+/* .post-view{
     margin: 10px 5%;
-}
+} */
 
 .post-view:hover{
     cursor: default;
@@ -76,17 +58,6 @@ input{
     background-color: white;
 }
 
-.comment-author, .comment-date{
-    display: inline-block;
-    font-weight: 500;
-}
-
-.comment-date{
-    position: absolute;
-    right: 0;
-    margin-right: 1%;
-}
-
 .comment-form{
     margin-left: 15%;
     margin-bottom: 1%;
@@ -94,6 +65,20 @@ input{
 
 .comment{
     padding: 20px;
+    position: relative;
+}
+
+.comment-author{
+    font-size: 1em;
+}
+
+.comment-date{
+    font-size: .8em;
+}
+
+.comment-author, .comment-date{
+    font-weight: 500;
+    opacity: 0.9;
 }
 
 .comment:hover{
@@ -109,4 +94,50 @@ input{
     100% {
         left: 0%;
     }
+}
+
+.post_pic{
+    height: 100%;
+    width: 50%;
+    background-size: contain;
+    border-radius: 50%;
+}
+
+.details, .details-1{
+    font-weight: 500;
+    font-size: .8em;
+    margin: 1% 0;
+}
+
+.post_user, .post_content{
+    position: relative;
+    display: inline-block;
+}
+
+.post_user{
+    width: 25%;
+    text-align: center;
+}
+
+.post_content{
+    width: 70%;
+}
+
+.post, .post-view, .comment{
+    display: flex;
+    justify-content:flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.comment-user-info{
+    text-align: center;
+    width: 20%;
+}
+
+.details-1{
+    font-size: .7em;
+    display: inline-block;
+    position: relative;
+    width: 70%;
 }
