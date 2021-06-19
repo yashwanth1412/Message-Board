@@ -5,16 +5,19 @@
         <a href="{% url 'post:delete_post' post.id %}">Delete</a>
     {% endif %}
     <div class="post-view">
-        <h1 class="title"> {{ post.title }} </h1>
-        <div class="author"> Posted by
-            {% if request.user == post.author %}
-                You
-            {% else %}
-                {{ post.author.first_name}}
-            {% endif %}
-        </div>
-        <div class="date"> {{ post.date_posted }} </div>
-        <div class="content"> {{ post.content }} </div>
+        <img src="{{post.author.profile.profile_pic.url}}" class='post_pic'>
+            <h1 class="title"> {{ post.title }} </h1>
+            <div class="details">
+                <div class="author"> Posted by 
+                    {% if request.user == post.author %}
+                        You
+                    {% else %}
+                        {{ post.author.first_name}}
+                    {% endif %}
+                </div>
+                <div class="date"> {{ post.date_posted }} </div>
+            </div>  
+            <div class="content"> {{ post.content }} </div>
         <div class="like"> {{ no_liked }}
             <form method="POST" action="{% url 'post:like_post' post.id %}" class="like_form">
                 {% csrf_token %}
