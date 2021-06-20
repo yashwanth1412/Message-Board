@@ -46,7 +46,7 @@
         {% for comment in comments %}
             <div class="comment">
                 <div class="comment-user-info">
-                    <img src="{{comment.user.profile.profile_pic.url}}" class='post_pic'>
+                    <img src="{{comment.user.profile.profile_pic.url}}" class='post_pic' loading="lazy">
                 </div>
                 <div>
                     <div class="comment-author">
