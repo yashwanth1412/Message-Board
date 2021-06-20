@@ -1,6 +1,7 @@
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.cache import cache_control
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -48,14 +49,17 @@ def add_post(request):
         "form" : form
     })
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="users:login")
 def view_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
+    post = Post.objects.all().filter(pk=post_id)
+    if not len(post):
+        return redirect(reverse("post:index"))
+    
+    post = post[0]
+
     comments = post.comments.all().order_by("-commented_on")
     liked_users = post.liked_users.all()
-
-    profile_pic = request.user.profile.profile_pic.url
-    print(profile_pic)
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
