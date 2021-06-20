@@ -19,7 +19,7 @@
             </div>
         </div>  
         <div class="post_content">
-            <h1 class="title"> {{ post.title }} </h1>
+            <h1 class="title"> {{ post.title | title  }} </h1>
             <div class="content"> {{ post.content }} </div>
             <div class="like"> {{ no_liked }}
                 <form method="POST" action="{% url 'post:like_post' post.id %}" class="like_form">
@@ -56,7 +56,7 @@
                             {{ comment.user.first_name}}
                         {% endif %} 
                     </div>
-                    <div class="comment-date">{{ comment.commented_on }} </div>
+                    <div class="comment-date">{{ comment.commented_on}} </div>
                     <div class="message"> {{ comment.message }} </div>
                 </div>
             </div>

@@ -8,4 +8,19 @@
         <input type="hidden" value="like" name="type" id="like_type">
         <button type="submit" class="btn btn-success"> Like </button>
     {% endif %}
+
+    <script>
+        $(".like_form").submit(e => {
+            e.preventDefault()
+            
+            $.ajax({
+                method: "POST",
+                url: "{% url 'post:like_post' post.id %}",
+                data: $(".like_form").serialize()
+            })
+            .done(data => {
+                $(".like").html(data)
+            })
+        })
+    </script>
 </form>

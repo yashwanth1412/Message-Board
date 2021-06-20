@@ -1,9 +1,45 @@
 {% extends "post/layout.html" %}
-{% block body %}
+{% block content %}
     <form add="{% url 'post:add_post' %}" method="POST">
         {% csrf_token %}
         {{form}}
         <input type="submit" value="Add">
     </form>
-    <a href="{% url 'post:index' %}">My posts</a> 
+    <a href="{% url 'post:my_posts' %}">My posts</a> 
+
+    <script>
+        var loc = window.location
+        var wsSrt = "ws://"
+        if(loc.protocol == "https:"){
+            wsSrt = "wss://"
+        }
+        var endpoint = wsSrt + loc.host + "/post"
+        console.log(endpoint)
+        var socket = new WebSocket(endpoint)
+        var form = $("form")
+        var title = $("#id_title")
+        var content = $("#id_content")
+
+        socket.onopen = (e) => {
+            form.submit(e => {
+                e.preventDefault()
+                socket.send(JSON.stringify({
+                    'title' : title.val(),
+                    'content' : content.val()
+                }))
+
+                form.trigger("reset");
+                window.location.assign("{% url 'post:index' %}")
+            })
+            
+        }
+
+        socket.onerror = (e) => {
+            console.log("error", e)
+        }
+
+        socket.onclose = (e) => {
+            console.log("close", e)
+        }
+    </script>
 {% endblock %}
