@@ -1,4 +1,4 @@
-{{ no_liked }}
+<span class="like_count">{{ no_liked }}</span>
 <form method="POST" action="{% url 'post:like_post' post.id %}" class="like_form">
     {% csrf_token %}
     {% if request.user in liked_users %}

@@ -1,0 +1,21 @@
+{% extends "post/layout.html" %}
+
+{% block content %}
+
+    <form action="{% url 'users:register' %}" method="post">
+        {% csrf_token %}
+        {{form}}
+        {{form.errors}}
+        <input type="submit" value="Register" class="btn btn-success">
+    </form>
+
+    <style>
+        form{
+            margin: 2%;
+        }
+
+        .btn{
+            margin-top: 1%;
+        }
+    </style>
+{% endblock %}

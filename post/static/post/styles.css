@@ -141,3 +141,12 @@ input{
     position: relative;
     width: 70%;
 }
+
+.like_count{
+    font-size: 1.5em;
+    font-weight:600;
+}
+
+.like{
+    margin: 1% 0;
+}

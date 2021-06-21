@@ -4,9 +4,23 @@
 
     <form action="{% url 'users:login' %}" method="post">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password", placeholder="password" required>
-        <input type="submit" value="Login">
+        <input type="text" name="username" placeholder="Username" required class="form-control">
+        <input type="password" name="password", placeholder="password" required class="form-control">
+        <input type="submit" value="Login" class="btn btn-success">
     </form>
+
+    <div id="register">Don't have an account? <a href="{% url 'users:register' %}"> Register </a></div>
     
+    <style>
+        form, #register{
+            margin: 2%;
+            -webkit-margin-collapse: collapse;
+        }
+
+        input{
+            margin-top: 1%;
+            -webkit-margin-collapse: collapse;
+        }
+    </style>
+
 {% endblock %}

@@ -3,9 +3,17 @@
     <form add="{% url 'post:add_post' %}" method="POST">
         {% csrf_token %}
         {{form}}
-        <input type="submit" value="Add">
+        <input type="submit" value="Add" class="btn btn-success add-p">
     </form>
-    <a href="{% url 'post:my_posts' %}">My posts</a> 
+
+    <style>
+        form{
+            margin: 1%;
+        }
+        .add-p{
+            margin-top: 1%;
+        }
+    </style>
 
     <script>
         var loc = window.location

@@ -2,7 +2,7 @@
 
 {% block content %}
     {% if request.user == post.author %}
-        <a href="{% url 'post:delete_post' post.id %}">Delete</a>
+        <a href="{% url 'post:delete_post' post.id %}" class="btn btn-danger" style="float: right; margin-right: 1%; margin-top: 1%;">Delete</a>
     {% endif %}
     <div class="post-view">
         <div class="post_user">
@@ -21,7 +21,7 @@
         <div class="post_content">
             <h1 class="title"> {{ post.title | title  }} </h1>
             <div class="content"> {{ post.content }} </div>
-            <div class="like"> {{ no_liked }}
+            <div class="like"> <span class="like_count">{{ no_liked }}</span>
                 <form method="POST" action="{% url 'post:like_post' post.id %}" class="like_form">
                     {% csrf_token %}
                     {% if request.user in liked_users %}
@@ -36,10 +36,10 @@
         </div> 
     </div>
 
-    <form add="{% url 'post:view_post' post.id %}" method="POST" class="comment-form">
+    <form add="{% url 'post:view_post' post.id %}" method="POST" class="comment-form" style="width:50%">
         {% csrf_token %}
         {{form}}
-        <input type="submit" value="Comment">
+        <input type="submit" value="Comment" class="btn btn-success" style="margin-top:1%">
     </form>
 
     <div class="comments">
@@ -59,11 +59,11 @@
                     <div class="comment-date">{{ comment.commented_on}} </div>
                     <div class="message"> {{ comment.message }} </div>
                 </div>
-            </div>
-            <div class="delete-comment">
-                {% if request.user == comment.user %}
-                    <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}">Delete</a>
-                {% endif %}
+                <div class="delete-comment" style="right: 0; position: absolute; margin-right: 1%;">
+                    {% if request.user == comment.user %}
+                        <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                </div>
             </div>
             
             <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
@@ -71,7 +71,7 @@
             <div class="empty">No comments yet</div>
         {% endfor %}
     </div>
-    <a href="{% url 'post:index' %}">All Posts</a>
+    <a href="{% url 'post:index' %}" class='btn btn-dark' style="margin: 1%;">Back</a>
 
     <script>
         var loc = window.location
