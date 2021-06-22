@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
+from django.views import View
 from django.contrib import messages
 from .forms import ProfileForm, UserRegisterForm
 
 # Create your views here.
+
+
+
 @login_required(login_url="users:login")
 def index(request):
     profile = request.user.profile
