@@ -5,7 +5,24 @@
 
     <form method="POST" action="{% url 'users:index' %}" enctype="multipart/form-data" id='form'>
         {% csrf_token %}
-        {{ form }}
+        {% for field in form %}
+            {{field.label}}
+
+            {% if forloop.first %}
+            <div>
+                <img src={{request.user.profile.profile_pic.url}} width="20%" height="20%" style="background-size: contain;">
+                <input type="file" name="profile_pic" accept="image/*" id="id_profile_pic" readonly="">
+            </div>
+            {% else %}
+                {{field}}
+            {% endif %}
+            
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error | escape }}</strong>
+                </div> 
+            {% endfor %}
+        {% endfor %}
         <input type="submit" value="Update" class="btn btn-success" id="form-btn">
         <input type="submit" value="Save" class="btn btn-success" id="form-save">
     </form>
@@ -19,7 +36,7 @@
             width: 30%;
         }
 
-        input, label{
+        input, textarea{
             margin: 1% 0;
             -webkit-margin-collapse: collapse;
         }
@@ -41,6 +58,7 @@
             for (var i = 0, len = elements.length; i < len; ++i) {
                 elements[i].readOnly = val;
             }
+            document.getElementById("id_profile_pic").disabled = val;
         }
 
         $(window).on("load", e => {

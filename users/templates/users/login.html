@@ -4,7 +4,7 @@
 
     <form action="{% url 'users:login' %}" method="post">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required class="form-control">
+        <input type="text" name="username" placeholder="Username" required class="form-control" autofocus>
         <input type="password" name="password", placeholder="password" required class="form-control">
         <input type="submit" value="Login" class="btn btn-success">
     </form>

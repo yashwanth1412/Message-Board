@@ -22,8 +22,10 @@ def index(request):
             messages.success(request, "Sucessfully updated profile")
             return redirect(reverse("users:index"))
         else:
-            messages.warning(request, "Invalid profile")
-            return redirect(reverse("users:index"))
+            messages.error(request, "Invalid profile")
+            return render(request, 'users/index.html', {
+                "form" : form
+            })
 
     return render(request, 'users/index.html', {
         "form" : form
@@ -42,8 +44,8 @@ def login_user(request):
             login(request, user)
             return redirect(reverse("post:index"))
         else:
-            messages.warning(request, 'Invalid credentials')
-            return render(request, 'users/login.html')
+            messages.error(request, 'Invalid Username or Password')
+            return redirect(reverse("users:login"))
 
     return render(request, 'users/login.html')
 
@@ -59,8 +61,9 @@ def register_user(request):
             return redirect(reverse("users:login"))
         
         else:
-            messages.warning(request, "Invalid Details")
-            return redirect(reverse("users:register"))
+            return render(request, "users/register.html", {
+                "form" : form
+            })
 
     else:
         form = UserRegisterForm()
@@ -69,8 +72,10 @@ def register_user(request):
         "form" : form
     })
 
-@login_required(login_url="users:login")
 def logout_user(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You are not logged in")
+        return redirect(reverse("users:login"))
     logout(request)
     messages.success(request, "Successfully logged out")
     return redirect(reverse("users:login"))

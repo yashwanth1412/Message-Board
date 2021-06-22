@@ -2,7 +2,15 @@
 {% block content %}
     <form add="{% url 'post:add_post' %}" method="POST">
         {% csrf_token %}
-        {{form}}
+        {% for field in form %}
+            {{field.label}}
+            {{field}}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error | escape }}</strong>
+                </div> 
+            {% endfor %}
+        {% endfor %}
         <input type="submit" value="Add" class="btn btn-success add-p">
     </form>
 

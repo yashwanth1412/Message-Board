@@ -24,8 +24,8 @@ def delete_before_change(sender, instance, **kwargs):
     if profile:
         old_pic = profile.profile_pic
         new_pic = instance.profile_pic.url
-        print(old_pic.url)
-        if old_pic != new_pic and old_pic.url != "/media/avatar.png":
+        
+        if old_pic.url != new_pic and old_pic.url != "/media/avatar.png":
             old_pic.delete(save=False)
 
 @receiver(post_save, sender=Profile)
