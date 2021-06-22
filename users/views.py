@@ -8,6 +8,55 @@ from django.contrib import messages
 from .forms import ProfileForm, UserRegisterForm
 
 # Create your views here.
+class RegisterView(View):
+    form = UserRegisterForm
+    template_name = "users/register.html"
+    reverse_url = "post:index"
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse(self.reverse_url))
+
+        return render(request, self.template_name, {
+            "form" : self.form()
+        })
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse(self.reverse_url))
+        
+        form = self.form(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Sucessfully created account")
+            return redirect(reverse("users:login"))
+        
+        else:
+            return render(request, self.template_name, {
+                "form" : form
+            })
+
+class LoginView(View):
+    template_name = 'users/login.html'
+    reverse_url = "post:index"
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse(self.reverse_url))
+
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect(reverse(self.reverse_url))
+
+        messages.error(request, 'Invalid Username or Password')
+        return redirect(reverse("users:login"))
 
 @method_decorator(login_required, name='dispatch')
 class IndexView(View):
@@ -39,50 +88,15 @@ class IndexView(View):
                 "form" : form
             })
 
-def login_user(request):
-    if request.user.is_authenticated:
-        return redirect(reverse("post:index"))
+class LogOutView(View):
+    redirect_url = "users:login"
 
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect(reverse("post:index"))
-        else:
-            messages.error(request, 'Invalid Username or Password')
-            return redirect(reverse("users:login"))
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "You are not logged in")
+            return redirect(reverse(self.redirect_url))
 
-    return render(request, 'users/login.html')
+        logout(request)
 
-def register_user(request):
-    if request.user.is_authenticated:
-        return redirect(reverse("post:index"))
-
-    if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Sucessfully created account")
-            return redirect(reverse("users:login"))
-        
-        else:
-            return render(request, "users/register.html", {
-                "form" : form
-            })
-
-    else:
-        form = UserRegisterForm()
-
-    return render(request, "users/register.html", {
-        "form" : form
-    })
-
-def logout_user(request):
-    if not request.user.is_authenticated:
-        messages.error(request, "You are not logged in")
-        return redirect(reverse("users:login"))
-    logout(request)
-    messages.success(request, "Successfully logged out")
-    return redirect(reverse("users:login"))
+        messages.success(request, "Successfully logged out")
+        return redirect(reverse(self.redirect_url))
