@@ -9,33 +9,35 @@ from .forms import ProfileForm, UserRegisterForm
 
 # Create your views here.
 
+@method_decorator(login_required, name='dispatch')
+class IndexView(View):
+    form = ProfileForm
+    template_name = 'users/index.html'
 
+    def get(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = self.form(instance=profile)
 
-@login_required(login_url="users:login")
-def index(request):
-    profile = request.user.profile
-    form = ProfileForm(instance=profile)
+        return render(request, self.template_name, {
+            "form" : form
+        })
 
-    if request.method == "POST":
-        print(request.POST)
-        form = ProfileForm(request.POST or None, request.FILES or None, instance=profile)
-        
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        form = self.form(request.POST or None, request.FILES or None, instance=profile)
+
         if form.is_valid():
             edit = form.save(commit=False)
             edit.save()
             
             messages.success(request, "Sucessfully updated profile")
             return redirect(reverse("users:index"))
+
         else:
             messages.error(request, "Invalid profile")
-            return render(request, 'users/index.html', {
+            return render(request, self.template_name, {
                 "form" : form
             })
-
-    return render(request, 'users/index.html', {
-        "form" : form
-    })
-
 
 def login_user(request):
     if request.user.is_authenticated:
