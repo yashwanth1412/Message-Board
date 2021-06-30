@@ -150,3 +150,12 @@ input{
 .like{
     margin: 1% 0;
 }
+
+.group_container{
+    margin: 0 2%;
+}
+
+.group_link{
+    text-decoration: none;
+    color: black;
+}

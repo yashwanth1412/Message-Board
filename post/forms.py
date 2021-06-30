@@ -1,4 +1,3 @@
-from django.db.models.base import Model
 from django.forms import ModelForm, CharField, TextInput, Textarea
 from .models import Post, Comment, ClubPost
 
