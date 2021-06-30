@@ -3,23 +3,34 @@
 {% block content %}
     <div class="group_container">
         {% for group in groups %}
-            <a href="{% url 'post:view_club' group.name %}" style="display: block;" class="group_link">
+            <a href="{% url 'post:view_club' group.name %}" class="group_link">
                 <div class="group">
                     <h1 class="group_name"> {{ group.name }} </h1>
-                    <div class="author"> Created by 
-                        {% if request.user == group.created_by %}
-                            You
-                        {% else %}
-                            {{ post.author.first_name }}
-                        {% endif %}
-                    </div>
-                    {% if request.user in group.mbr_usrs.all %}
-                        <a class="btn btn-danger">Leave</a>
+                    {% if request.user == group.created_by %}
+                        <div class="author"> Created by You </div>
+                        <a class="btn btn-danger group-btn" id="leave" href="{% url 'post:delete_club' group.name %}">Delete</a>
                     {% else %}
-                        <a class="btn btn-success">Join</a>
+                        <div class="author"> Created by {{ group.created_by.first_name }} </div>  
+                        {% if request.user in group.mbr_usrs.all %}
+                            <a class="btn btn-danger group-btn" id="leave" href="{% url 'post:join_leave' group.name %}">Leave</a>
+                        {% else %}
+                            <a class="btn btn-success group-btn" id="join" href="{% url 'post:join_leave' group.name %}">Join</a>
+                        {% endif %} 
                     {% endif %}
                 </div>
             </a>
+            <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
+        {% empty %}
+            <div class="empty">
+                <h1>No groups have been created yet!</h1>
+                <a class="btn btn-dark" href="{% url 'post:create_club' %}">Create Group</a>
+            </div>
         {% endfor %}
     </div>
+
+    <script>
+        $("#leave").on('click', (e) => {
+
+        })
+    </script>
 {% endblock %}

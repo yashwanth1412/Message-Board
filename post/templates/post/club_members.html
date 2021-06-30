@@ -1,0 +1,23 @@
+{% extends "post/layout.html" %}
+{% block content %}
+    <div class="members_list">
+        {% for member in members %}
+            <div class="member">
+                {% if member == request.user %}
+                    <div class="mbr_name"> You </div>
+                {% else %}
+                    <div class="mbr_name"> {{ member.username }} </div>
+                    {% if request.user == admin %}
+                        <a href="{% url 'post:remove_user' club_name=club_name user_id=member.id %}" class="btn btn-danger mbr_remove">Remove</a>
+                    {% endif %}
+                {% endif %}
+                {% if member == admin %}
+                    <div> Admin </div>
+                {% else %}
+                    <div> Member </div>
+                {% endif %}
+            </div>
+            <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
+        {% endfor %}
+    </div>
+{% endblock %}

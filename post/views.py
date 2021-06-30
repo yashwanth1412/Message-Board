@@ -1,4 +1,4 @@
-from django import template
+from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,7 +15,7 @@ from .forms import PostForm, CommentForm, ClubForm
 # Create your views here.
 @login_required(login_url="users:login")
 def index(request):
-    posts =  Post.objects.all().order_by("-date_posted")
+    posts =  Post.objects.filter(grp_name=None).order_by("-date_posted")
 
     return render(request, "post/index.html", {
         "posts" : posts,
@@ -179,11 +179,17 @@ class CreateClubView(View):
     template_name = "post/add_club.html"
 
     def get(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied
+
         return render(request, self.template_name, {
             "form" : self.form()
         })
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied
+
         form = self.form(request.POST)
         if form.is_valid():
             s = form.save(commit=False)
@@ -191,7 +197,7 @@ class CreateClubView(View):
             s.save()
             s.mbr_usrs.add(request.user)
             messages.success(request, f"Successfully created group {s.name}")
-            return redirect(reverse("post:index"))
+            return redirect(reverse("post:view_groups"))
         
         return render(request, self.template_name, {
             "form" : form
@@ -202,7 +208,7 @@ class ViewClubs(View):
     template_name = "post/view_grps.html"
 
     def get(self, request, *args, **kwargs):
-        grps = request.user.grps.all()
+        grps = ClubPost.objects.all()
         return render(request, self.template_name, {
             "groups" : grps
         })
@@ -212,24 +218,31 @@ class ClubPage(View):
     template_name = "post/index.html"
 
     def get(self, request, club_name, *args, **kwargs):
-        grps = get_object_or_404(ClubPost, name=club_name)
-        posts = grps.group_posts.all()
+        grp = get_object_or_404(ClubPost, name=club_name)
+        posts = grp.group_posts.all().order_by("-date_posted")
+
+        if request.user not in grp.mbr_usrs.all():
+            messages.warning(request, "You need to join before you view the group!")
+            return redirect(reverse("post:view_groups"))
 
         return render(request, self.template_name, {
             "posts" : posts,
             "message": "No one in the group posted anything yet. Add first post!!",
             "index" : False,
-            "club_name" : grps.name,
+            "club_name" : grp.name,
             "empty_msg" : "Add Post"
         })
 
+@method_decorator(login_required, name='dispatch')
 class AddClubPostView(View):
     form = PostForm
     template_name = 'post/add_club_post.html'
 
     def get(self, request, club_name, *args, **kwargs):
         grp = get_object_or_404(ClubPost, name=club_name)
-        print("hello")
+        if request.user not in grp.mbr_usrs.all():
+            raise PermissionDenied
+
         return render(request, self.template_name, {
             "form" : self.form(),
             "club_name" : club_name
@@ -238,6 +251,8 @@ class AddClubPostView(View):
     def post(self, request, club_name, *args, **kwargs):
         grp = get_object_or_404(ClubPost, name=club_name)
         form = self.form(request.POST)
+        if request.user not in grp.mbr_usrs.all():
+            raise PermissionDenied
         if form.is_valid():
             x = form.save(commit=False)
             x.author = request.user
@@ -251,3 +266,55 @@ class AddClubPostView(View):
             "form" : self.form,
             "club_name" : club_name
         })
+
+@method_decorator(login_required, name='dispatch')
+class JoinLeaveClub(View):
+    def get(self, request, club_name, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        members = grp.mbr_usrs.all()
+
+        if request.user in members:
+            grp.mbr_usrs.remove(request.user)
+            messages.success(request, f"Successfully left {grp.name}")
+            return redirect(reverse("post:index"))
+        
+        grp.mbr_usrs.add(request.user)
+        messages.success(request, f"Successfully joined {grp.name}")
+        return redirect(reverse("post:view_club", args=(grp.name,)))
+
+@method_decorator(login_required, name='dispatch')
+class DeleteClub(View):
+    def get(self, request, club_name, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        if request.user == grp.created_by:
+            grp.delete()
+            messages.success(request, f"Successfully deleted {grp.name}")
+            return redirect(reverse("post:index"))
+        
+        raise PermissionDenied
+
+@method_decorator(login_required, name='dispatch')
+class ClubMembersView(View):
+    template_name = "post/club_members.html"
+    
+    def get(self, request, club_name, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        members = grp.mbr_usrs.all()
+
+        return render(request, self.template_name, {
+            "members" : members,
+            "admin" : grp.created_by,
+            "club_name" : grp.name
+        })
+
+@method_decorator(login_required, name='dispatch')
+class RemoveMemberView(View):
+    def get(self, request, club_name, user_id, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        mbr = User.objects.get(pk=user_id)
+        if mbr not in grp.mbr_usrs.all() or request.user != grp.created_by:
+            raise PermissionDenied
+
+        grp.mbr_usrs.remove(mbr)
+        messages.success(request, f"Successfully removed {mbr.username} from {grp.name}")
+        return redirect(reverse('post:view_club', args=(club_name,)))

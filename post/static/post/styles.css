@@ -17,10 +17,6 @@ body, .empty{
     transition: all 0.3s ease-in-out;
 }
 
-/* .post-view{
-    margin: 10px 5%;
-} */
-
 .post-view:hover{
     cursor: default;
 }
@@ -34,7 +30,7 @@ body, .empty{
     animation-duration: 1s;
 }
 
-.post:hover{
+.post:hover, .group:hover, .member:hover{
     background-color: #d8e3e7;
     box-shadow: 10px 10px 5px rgb(165, 163, 163);
 }
@@ -152,10 +148,47 @@ input{
 }
 
 .group_container{
-    margin: 0 2%;
+    margin: 0 25%;
+    background-color: whitesmoke;
 }
 
 .group_link{
     text-decoration: none;
     color: black;
+}
+
+.group{
+    position: relative;
+    padding: 3%;
+}
+
+.group-btn{
+    position: absolute;
+    right: 1%;
+    top: 50%;
+}
+
+.add_post-btn{
+    position: absolute;
+    right: 1%;
+}
+
+.members_list{
+    margin: 1% 25%;
+    background-color: whitesmoke;
+}
+
+.member{
+    padding: 2%;
+    position: relative;
+}
+
+.mbr_name{
+    font-size: 2em;
+}
+
+.mbr_remove{
+    position: absolute;
+    right: 1%;
+    top: 50%;
 }
