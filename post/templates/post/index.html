@@ -28,7 +28,11 @@
         {% empty %}
             <div class="empty">
                 <h1> {{message}}</h1>
-                <a href="{% url empty_btn_url %}" class="btn btn-dark">{{ empty_msg }}</a>
+                {% if not club_name %}
+                    <a href="{% url 'post:add_post' %}" class="btn btn-dark">{{ empty_msg }}</a>
+                {% else %}
+                    <a href="{% url 'post:add_club_post' club_name %}" class="btn btn-dark">{{ empty_msg }}</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

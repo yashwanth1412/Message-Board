@@ -1,28 +1,26 @@
+from django import template
 from django.http.response import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.cache import cache_control
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
-from .models import Post, Comment
-from .forms import PostForm, CommentForm
+from .models import Post, Comment, ClubPost
+from .forms import PostForm, CommentForm, ClubForm
 
 # Create your views here.
 @login_required(login_url="users:login")
 def index(request):
     posts =  Post.objects.all().order_by("-date_posted")
-    form = PostForm()
 
     return render(request, "post/index.html", {
         "posts" : posts,
         "message": "No posts yet!. Be the first one to post!!",
-        "form" : form,
         "index" : True,
-        "empty_btn_url" : "post:add_post",
         "empty_msg" : "Add Post"
     })
 
@@ -34,7 +32,6 @@ def my_posts(request):
         "posts" : posts,
         "message": "You haven't posted anything yet. Add your first post!!",
         "index" : False,
-        "empty_btn_url" : "post:add_post",
         "empty_msg" : "Add Post" 
     })
 
@@ -174,4 +171,83 @@ class LikedPostView(View):
             "index" : False,
             "empty_btn_url" : "post:index",
             "empty_msg" : "Posts" 
+        })
+
+@method_decorator(login_required, name='dispatch')
+class CreateClubView(View):
+    form = ClubForm
+    template_name = "post/add_club.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {
+            "form" : self.form()
+        })
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        if form.is_valid():
+            s = form.save(commit=False)
+            s.created_by = request.user
+            s.save()
+            s.mbr_usrs.add(request.user)
+            messages.success(request, f"Successfully created group {s.name}")
+            return redirect(reverse("post:index"))
+        
+        return render(request, self.template_name, {
+            "form" : form
+        })
+
+@method_decorator(login_required, name='dispatch')
+class ViewClubs(View):
+    template_name = "post/view_grps.html"
+
+    def get(self, request, *args, **kwargs):
+        grps = request.user.grps.all()
+        return render(request, self.template_name, {
+            "groups" : grps
+        })
+
+@method_decorator(login_required, name='dispatch')
+class ClubPage(View):
+    template_name = "post/index.html"
+
+    def get(self, request, club_name, *args, **kwargs):
+        grps = get_object_or_404(ClubPost, name=club_name)
+        posts = grps.group_posts.all()
+
+        return render(request, self.template_name, {
+            "posts" : posts,
+            "message": "No one in the group posted anything yet. Add first post!!",
+            "index" : False,
+            "club_name" : grps.name,
+            "empty_msg" : "Add Post"
+        })
+
+class AddClubPostView(View):
+    form = PostForm
+    template_name = 'post/add_club_post.html'
+
+    def get(self, request, club_name, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        print("hello")
+        return render(request, self.template_name, {
+            "form" : self.form(),
+            "club_name" : club_name
+        })
+
+    def post(self, request, club_name, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        form = self.form(request.POST)
+        if form.is_valid():
+            x = form.save(commit=False)
+            x.author = request.user
+            x.grp_name = grp
+            x.save()
+            messages.success(request, "Sucessfully added post")
+            return redirect(reverse("post:view_club", args=(club_name,)))
+
+        messages.error(request, "Error! adding post")
+        return render(request, self.template_name, {
+            "form" : self.form,
+            "club_name" : club_name
         })

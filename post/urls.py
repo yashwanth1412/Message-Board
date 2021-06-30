@@ -14,5 +14,9 @@ urlpatterns = [
     path("<int:post_id>/ajax/comments", views.ajax_comments, name="ajax_getComments"),
     path("delete/<int:post_id>", views.delete_post, name="delete_post"),
     path("delete/comment/<int:comment_id>/<int:post_id>", views.delete_comment, name="delete_comment"),
-    path("liked_posts", views.LikedPostView.as_view(), name="liked_posts")
+    path("liked_posts", views.LikedPostView.as_view(), name="liked_posts"),
+    path("add_club", views.CreateClubView.as_view(), name="create_club"),
+    path("view_grps", views.ViewClubs.as_view(), name="view_groups"),
+    path("club/<str:club_name>", views.ClubPage.as_view(), name="view_club"),
+    path("add_post/<str:club_name>", views.AddClubPostView.as_view(), name="add_club_post")
 ]

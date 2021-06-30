@@ -17,7 +17,7 @@
     </div>
     <div class="delete-comment">
         {% if request.user == comment.user %}
-            <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}">Delete</a>
+            <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %} btn btn-danger">Delete</a>
         {% endif %}
     </div>
     
