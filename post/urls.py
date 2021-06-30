@@ -13,5 +13,6 @@ urlpatterns = [
     path("like/<int:post_id>", views.like_post, name="like_post"),
     path("<int:post_id>/ajax/comments", views.ajax_comments, name="ajax_getComments"),
     path("delete/<int:post_id>", views.delete_post, name="delete_post"),
-    path("delete/comment/<int:comment_id>/<int:post_id>", views.delete_comment, name="delete_comment")
+    path("delete/comment/<int:comment_id>/<int:post_id>", views.delete_comment, name="delete_comment"),
+    path("liked_posts", views.LikedPostView.as_view(), name="liked_posts")
 ]

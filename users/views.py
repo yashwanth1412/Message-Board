@@ -7,6 +7,7 @@ from django.views import View
 from django.contrib import messages
 from .forms import ProfileForm, UserRegisterForm
 
+
 # Create your views here.
 class RegisterView(View):
     form = UserRegisterForm
@@ -53,6 +54,7 @@ class LoginView(View):
 
         if user is not None:
             login(request, user)
+            messages.success(request, f"Successfully logged in as {username}")
             return redirect(reverse(self.reverse_url))
 
         messages.error(request, 'Invalid Username or Password')

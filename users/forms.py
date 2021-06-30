@@ -1,4 +1,4 @@
-from django.forms import ModelForm, CharField, Textarea, TextInput, EmailField, EmailInput, URLField, PasswordInput
+from django.forms import ModelForm, CharField, Textarea, TextInput, EmailField, EmailInput, URLField, PasswordInput, fields
 from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -22,3 +22,4 @@ class ProfileForm(ModelForm):
     class Meta:
         model =  Profile
         fields = ['profile_pic', 'first_name', 'last_name', 'email', 'bio', 'linked_in']
+

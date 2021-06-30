@@ -3,6 +3,8 @@
 {% block content %}
     <h1> Welcome, {{ request.user.first_name }}</h1>
 
+    <a href="{% url 'users:change_password' %}"> Change Password? </a>
+
     <form method="POST" action="{% url 'users:index' %}" enctype="multipart/form-data" id='form'>
         {% csrf_token %}
         {% for field in form %}
@@ -23,8 +25,8 @@
                 </div> 
             {% endfor %}
         {% endfor %}
-        <input type="submit" value="Update" class="btn btn-success" id="form-btn">
-        <input type="submit" value="Save" class="btn btn-success" id="form-save">
+        <input type="submit" value="Edit" class="btn btn-success" id="form-btn">
+        <input type="submit" value="Update" class="btn btn-success" id="form-save">
     </form>
 
     <style>
@@ -71,6 +73,9 @@
             $("#form-save").css("display", "block")
             form_btn.css("display", "none")
             first_name.focus();
+            $('html, body').animate({
+                'scrollTop' : first_name.position().top
+            });
         })
     </script>
 

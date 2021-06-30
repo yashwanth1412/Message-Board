@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.cache import cache_control
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from .models import Post, Comment
@@ -18,8 +20,10 @@ def index(request):
     return render(request, "post/index.html", {
         "posts" : posts,
         "message": "No posts yet!. Be the first one to post!!",
-        "index": True,
-        "form" : form
+        "form" : form,
+        "index" : True,
+        "empty_btn_url" : "post:add_post",
+        "empty_msg" : "Add Post"
     })
 
 @login_required(login_url="users:login")
@@ -29,7 +33,9 @@ def my_posts(request):
     return render(request, "post/index.html", {
         "posts" : posts,
         "message": "You haven't posted anything yet. Add your first post!!",
-        "index": False
+        "index" : False,
+        "empty_btn_url" : "post:add_post",
+        "empty_msg" : "Add Post" 
     })
 
 @login_required(login_url="users:login")
@@ -54,6 +60,7 @@ def add_post(request):
 def view_post(request, post_id):
     post = Post.objects.all().filter(pk=post_id)
     if not len(post):
+        messages.warning(request, "The post you are searching for has been deleted!")
         return redirect(reverse("post:index"))
     
     post = post[0]
@@ -155,3 +162,16 @@ def like_post(request, post_id):
           
     return redirect(reverse("post:view_post", args=(post_id,)))
 
+@method_decorator(login_required, name='dispatch')
+class LikedPostView(View):
+    template_name = "post/index.html"
+    def get(self, request, *args, **kwargs):
+        posts =  request.user.liked_posts.all().order_by("-date_posted")
+    
+        return render(request, self.template_name, {
+            "posts" : posts,
+            "message": "You haven't liked any post yet!",
+            "index" : False,
+            "empty_btn_url" : "post:index",
+            "empty_msg" : "Posts" 
+        })

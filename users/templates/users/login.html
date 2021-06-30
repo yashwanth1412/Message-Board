@@ -1,5 +1,5 @@
 {% extends "post/layout.html" %}
-
+{% load socialaccount %}
 {% block content %}
 
     <form action="{% url 'users:login' %}" method="post">
@@ -10,11 +10,22 @@
     </form>
 
     <div id="register">Don't have an account? <a href="{% url 'users:register' %}"> Register </a></div>
-    
+    <div class="row">
+          <a class="btn btn-dark" href="{% provider_login_url 'google' %}" role="button" style="text-transform:none">
+            <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+            Login with Google
+          </a>
+      </div>
     <style>
-        form, #register{
+
+        form{
             margin: 2%;
             -webkit-margin-collapse: collapse;
+        }
+
+        #register, .row{
+            margin-left: 2%;
+            width: 25%;
         }
 
         input{
