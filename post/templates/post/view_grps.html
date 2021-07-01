@@ -22,8 +22,10 @@
             <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
         {% empty %}
             <div class="empty">
-                <h1>No groups have been created yet!</h1>
-                <a class="btn btn-dark" href="{% url 'post:create_club' %}">Create Group</a>
+                <h1>No Clubs have been created yet!</h1>
+                {% if request.user.is_staff %}
+                    <a class="btn btn-dark" href="{% url 'post:create_club' %}">Create Group</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

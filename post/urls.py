@@ -22,5 +22,6 @@ urlpatterns = [
     path("join_leave/<str:club_name>", views.JoinLeaveClub.as_view(), name="join_leave"),
     path("delete/<str:club_name>", views.DeleteClub.as_view(), name="delete_club"),
     path("members/<str:club_name>", views.ClubMembersView.as_view(), name="club_members"),
-    path("remove_mbr/<str:club_name>/<int:user_id>", views.RemoveMemberView.as_view(), name="remove_user")
+    path("remove_mbr/<str:club_name>/<int:user_id>", views.AddRemoveMemberView.as_view(), name="add_remove_user"),
+    path("add_mbr/<str:club_name>", views.AddUserToGroup.as_view(), name="add_user")
 ]

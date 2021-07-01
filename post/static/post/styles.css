@@ -192,3 +192,8 @@ input{
     right: 1%;
     top: 50%;
 }
+
+.add_user{
+    position: absolute;
+    right: 1%;
+}

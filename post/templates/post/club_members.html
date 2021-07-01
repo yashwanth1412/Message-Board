@@ -1,5 +1,8 @@
 {% extends "post/layout.html" %}
 {% block content %}
+    {% if request.user == admin %}
+        <a class="add_user btn btn-dark" href="{% url 'post:add_user' club_name %}">Add User</a>
+    {% endif %}
     <div class="members_list">
         {% for member in members %}
             <div class="member">
@@ -8,7 +11,7 @@
                 {% else %}
                     <div class="mbr_name"> {{ member.username }} </div>
                     {% if request.user == admin %}
-                        <a href="{% url 'post:remove_user' club_name=club_name user_id=member.id %}" class="btn btn-danger mbr_remove">Remove</a>
+                        <a href="{% url 'post:add_remove_user' club_name=club_name user_id=member.id %}" class="btn btn-danger mbr_remove">Remove</a>
                     {% endif %}
                 {% endif %}
                 {% if member == admin %}
@@ -20,4 +23,6 @@
             <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
         {% endfor %}
     </div>
+
+    <a class="btn btn-dark" href="{% url 'post:view_club' club_name %}" style="margin-left: 1%;">Back</a>
 {% endblock %}

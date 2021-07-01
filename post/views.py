@@ -308,13 +308,33 @@ class ClubMembersView(View):
         })
 
 @method_decorator(login_required, name='dispatch')
-class RemoveMemberView(View):
+class AddRemoveMemberView(View):
     def get(self, request, club_name, user_id, *args, **kwargs):
         grp = get_object_or_404(ClubPost, name=club_name)
         mbr = User.objects.get(pk=user_id)
-        if mbr not in grp.mbr_usrs.all() or request.user != grp.created_by:
+        if request.user != grp.created_by:
             raise PermissionDenied
 
-        grp.mbr_usrs.remove(mbr)
-        messages.success(request, f"Successfully removed {mbr.username} from {grp.name}")
+        if mbr in grp.mbr_usrs.all():
+            grp.mbr_usrs.remove(mbr)
+            messages.success(request, f"Successfully removed {mbr.username} from {grp.name}")
+        else:
+            grp.mbr_usrs.add(mbr)
+            messages.success(request, f"Successfully added {mbr.username} to {grp.name}")
         return redirect(reverse('post:view_club', args=(club_name,)))
+
+@method_decorator(login_required, name='dispatch')
+class AddUserToGroup(View):
+    template_name = "post/add_members.html"
+    def get(self, request, club_name, *args, **kwargs):
+        grp = get_object_or_404(ClubPost, name=club_name)
+        
+        if request.user != grp.created_by:
+            raise PermissionDenied
+        
+        add_mbr = User.objects.exclude(grps=grp)
+
+        return render(request, self.template_name, {
+            "members" : add_mbr,
+            "club_name" : grp.name
+        })
