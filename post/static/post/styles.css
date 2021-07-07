@@ -4,7 +4,7 @@
 }
 
 body, .empty{
-    background-color: #d8ebe4;
+    background-color: #bbbdbc;
 }
 
 .post, .post-view{
@@ -31,7 +31,7 @@ body, .empty{
 }
 
 .post:hover, .group:hover, .member:hover{
-    background-color: #d8e3e7;
+    background-color: #d8e5e9;
     box-shadow: 10px 10px 5px rgb(165, 163, 163);
 }
 
@@ -119,7 +119,7 @@ input{
     width: 70%;
 }
 
-.post, .post-view, .comment{
+.post, .post-view, .comment, .member{
     display: flex;
     justify-content:flex-start;
     align-items: flex-start;
@@ -196,4 +196,12 @@ input{
 .add_user{
     position: absolute;
     right: 1%;
+}
+
+.member-info{
+    display: inline-block;
+}
+
+.member-pic{
+    width: 20%;
 }

@@ -21,7 +21,7 @@ def index(request):
         "posts" : posts,
         "message": "No posts yet!. Be the first one to post!!",
         "index" : True,
-        "empty_msg" : "Add Post"
+        "empty_msg" : "Add Post",
     })
 
 @login_required(login_url="users:login")
@@ -49,7 +49,8 @@ def add_post(request):
     else:
         form = PostForm()
     return render(request, "post/add_post.html", {
-        "form" : form
+        "form" : form,
+        "club_name" : None
     })
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -90,11 +91,15 @@ def view_post(request, post_id):
 @login_required(login_url="users:login")
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
+    grp_name = post.grp_name
     if post not in request.user.posts.all():
         raise PermissionDenied
     
     post.delete()
     messages.success(request, "Sucessfully deleted post")
+    if grp_name:
+        name = grp_name.name
+        return redirect(reverse("post:view_club", args=(name,)))
     return redirect(reverse("post:index"))
 
 @login_required(login_url="users:login")
@@ -108,8 +113,12 @@ def delete_comment(request, comment_id, post_id):
     return redirect(reverse("post:view_post", args=(post_id,)))
 
 @login_required(login_url="users:login")
-def ajax_posts(request):
-    posts =  Post.objects.all().order_by("-date_posted")
+def ajax_posts(request, club_name="None"):
+    if club_name != "None":
+        grp = get_object_or_404(ClubPost, name=club_name)
+        posts = grp.group_posts.all().order_by("-date_posted")
+    else:
+        posts =  Post.objects.filter(grp_name=None).order_by("-date_posted")
     temp = loader.get_template('post/ajax_posts.html')
     context = {
         "posts" : posts
@@ -236,7 +245,7 @@ class ClubPage(View):
 @method_decorator(login_required, name='dispatch')
 class AddClubPostView(View):
     form = PostForm
-    template_name = 'post/add_club_post.html'
+    template_name = 'post/add_post.html'
 
     def get(self, request, club_name, *args, **kwargs):
         grp = get_object_or_404(ClubPost, name=club_name)
@@ -272,6 +281,10 @@ class JoinLeaveClub(View):
     def get(self, request, club_name, *args, **kwargs):
         grp = get_object_or_404(ClubPost, name=club_name)
         members = grp.mbr_usrs.all()
+
+        if request.user == grp.created_by:
+            messages.warning(request, f"Cannot leave group since you are admin!")
+            return redirect(reverse("post:view_club", args=(grp.name,)))
 
         if request.user in members:
             grp.mbr_usrs.remove(request.user)

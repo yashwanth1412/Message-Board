@@ -7,19 +7,27 @@ from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 
-from .models import Post, Comment
+from .models import Post, Comment, ClubPost
 
 class ChatConsumer(AsyncConsumer):
     async def websocket_connect(self, event):
         print("connected to post", event)
 
         self.me = self.scope["user"]
-        self.chat_room = "index"
+        self.grp_name = self.scope["url_route"]["kwargs"]["grp_name"]
+
+        self.group_post = None
+        if self.grp_name != "None":
+            self.group_post = await self.get_group(self.grp_name)
+        
+        self.chat_room = self.grp_name
 
         await self.channel_layer.group_add(
             self.chat_room,
             self.channel_name
         )
+
+        print(f"connected {self.grp_name}")
 
         await self.send({
             "type": "websocket.accept",
@@ -58,10 +66,14 @@ class ChatConsumer(AsyncConsumer):
         print("disconnected", event)
 
     @database_sync_to_async
+    def get_group(self, grp_name):
+        return ClubPost.objects.get(name=grp_name)
+
+    @database_sync_to_async
     def create_post(self, post):
         title = post["title"]
         content = post['content']
-        return Post.objects.create(title=title, content=content, author=self.me)
+        return Post.objects.create(title=title, content=content, author=self.me, grp_name=self.group_post)
 
 class CommentConsumer(AsyncConsumer):
     async def websocket_connect(self, event):

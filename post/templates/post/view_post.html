@@ -59,11 +59,11 @@
                     <div class="comment-date">{{ comment.commented_on}} </div>
                     <div class="message"> {{ comment.message }} </div>
                 </div>
-                <div class="delete-comment" style="right: 0; position: absolute; margin-right: 1%;">
-                    {% if request.user == comment.user %}
+                {% if request.user == comment.user %}
+                    <div class="delete-comment" style="right: 0; position: absolute; margin-right: 1%;">
                         <a href="{% url 'post:delete_comment' comment_id=comment.id post_id=post.id %}" class="btn btn-danger">Delete</a>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
             
             <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 

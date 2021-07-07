@@ -23,7 +23,7 @@ application = ProtocolTypeRouter({
             AuthMiddlewareStack(
                 URLRouter([
                     url(r"comment/(?P<post_id>[0-9]+)", CommentConsumer.as_asgi()),
-                    url(r"post", ChatConsumer.as_asgi()),
+                    url(r"post/(?P<grp_name>\w+)", ChatConsumer.as_asgi()),
                 ])
             )
         )

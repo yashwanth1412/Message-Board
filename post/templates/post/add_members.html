@@ -3,12 +3,17 @@
     <div class="members_list">
         {% for member in members %}
             <div class="member">
-                <div class="mbr_name"> {{ member.username }} </div>
-                <a href="{% url 'post:add_remove_user' club_name=club_name user_id=member.id %}" class="btn btn-success mbr_remove">Add</a>
+                <div class="member-pic">
+                    <img src="{{member.profile.profile_pic.url}}" class='post_pic' loading="lazy">
+                </div>
+                <div class="member-info">
+                    <div class="mbr_name"> {{ member.username }} </div>
+                    <a href="{% url 'post:add_remove_user' club_name=club_name user_id=member.id %}" class="btn btn-success mbr_remove">Add</a>
+                </div>
             </div>
             <hr style="width:50%; margin: auto; color:rgb(37, 32, 32);"> 
         {% endfor %}
     </div>
 
-    <a class="btn btn-dark" href="{% url 'post:view_club' club_name %}" style="margin-left: 1%;">Back</a>
+    <a class="btn btn-dark" onclick="history.back()" style="margin-left: 1%;">Back</a>
 {% endblock %}

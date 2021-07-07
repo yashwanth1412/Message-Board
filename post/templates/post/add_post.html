@@ -1,6 +1,10 @@
 {% extends "post/layout.html" %}
 {% block content %}
-    <form add="{% url 'post:add_post' %}" method="POST">
+    {% if club_name %}
+        <form add="{% url 'post:add_club_post' club_name %}" method="POST">
+    {% else %}
+        <form add="{% url 'post:add_post' %}" method="POST">
+    {% endif %}  
         {% csrf_token %}
         {% for field in form %}
             {{field.label}}
@@ -27,9 +31,13 @@
         var loc = window.location
         var wsSrt = "ws://"
         if(loc.protocol == "https:"){
-            wsSrt = "wss://"
+                wsSrt = "wss://"
+            }
+        grp_name = "None"
+        if("{{club_name}}"){
+            grp_name = "{{club_name}}"
         }
-        var endpoint = wsSrt + loc.host + "/post"
+        var endpoint = wsSrt + loc.host + "/post/" + grp_name 
         console.log(endpoint)
         var socket = new WebSocket(endpoint)
         var form = $("form")
@@ -41,11 +49,18 @@
                 e.preventDefault()
                 socket.send(JSON.stringify({
                     'title' : title.val(),
-                    'content' : content.val()
+                    'content' : content.val(),
+                    'grp_name' : grp_name
                 }))
 
                 form.trigger("reset");
-                window.location.assign("{% url 'post:index' %}")
+                if(grp_name != "None"){
+                    
+                    window.location.assign("{% url 'post:view_club' club_name %}")
+                }
+                else{
+                    window.location.assign("{% url 'post:index' %}")
+                }
             })
             
         }

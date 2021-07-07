@@ -1,5 +1,6 @@
 {% extends "post/layout.html" %}
 
+{% load url_optional %}
 {% block content %}
     {% if posts %}
         <div class="add_post-btn">
@@ -51,40 +52,53 @@
             </div>
         {% endfor %}
     </div>
+    
+    <script>
+        var loc = window.location
+        var wsSrt = "ws://"
+        if(loc.protocol == "https:"){
+            wsSrt = "wss://"
+        }
+        grp_name = "None"
+        if("{{club_name}}"){
+            grp_name = "{{club_name}}"
+        }
+        console.log(grp_name)
+        var endpoint = wsSrt + loc.host + "/post/" + grp_name
+        console.log(endpoint)
+        var socket = new WebSocket(endpoint)
+        var post_container = $(".post-container")
 
-    {% if index %}
-        <script>
-            var loc = window.location
-            var wsSrt = "ws://"
-            if(loc.protocol == "https:"){
-                wsSrt = "wss://"
-            }
-            var endpoint = wsSrt + loc.host + "/post"
-            console.log(endpoint)
-            var socket = new WebSocket(endpoint)
-            var post_container = $(".post-container")
-            socket.onmessage = (e) => {
-                $.ajax({
-                        type: "GET",
-                        url : "{% url 'post:ajax_getPosts' %}",
-                        dataType: 'html',
-                        success: (response) => {
-                            $(".post-container").html(response)
-                        },
-                        error: (response) => {
-                            console.log("No data received")
-                        }
-                    });
-            }
+        get_url = ''
+        if(!"{{club_name}}"){
+            get_url = "{% url_optional 'post:ajax_getPosts' %}"
+        }
+        else{
+            get_url = "{% url_optional 'post:ajax_getPosts' club_name %}"
+        }
+        
+        socket.onmessage = (e) => {
+            $.ajax({
+                    type: "GET",
+                    url : get_url,
+                    dataType: 'html',
+                    success: (response) => {
+                        $(".post-container").html(response)
+                    },
+                    error: (response) => {
+                        console.log("No data received")
+                    }
+                });
+        }
 
-            socket.onerror = (e) => {
-                console.log("error", e)
-            }
+        socket.onerror = (e) => {
+            console.log("error", e)
+        }
 
-            socket.onclose = (e) => {
-                console.log("close", e)
-            }
-        </script>
-    {% endif %}
+        socket.onclose = (e) => {
+            console.log("close", e)
+        }
+    </script>
+    
 
 {% endblock %}

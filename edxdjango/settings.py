@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-8t$zwn$-cs^3)rczy+p02vz-h9+zom21nw6hh=$qvy6_xf@t6p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
+    'django_template_url_optional'
 ]
 
 MIDDLEWARE = [
