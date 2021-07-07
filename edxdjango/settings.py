@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+project_folder = os.path.expanduser('../edxdjango')
+load_dotenv(os.path.join(project_folder, '.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -189,8 +192,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': '182186367787-t9klhnfeff4upc3p8qq24nhqt27kpr54.apps.googleusercontent.com',
-            'secret': 'pFqsmnpBNbIOgzVdtQotWiyH',
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_SECRET'),
             'key': ''
         }
     }
