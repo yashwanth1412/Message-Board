@@ -48,10 +48,10 @@ python manage.py runserver
 ## Screenshots
 
 ### Home Page
-![main-page](./screenshots/general.png)
+![main-page](https://github.com/yashwanth1412/Message-Board/blob/master/screenshots/general.PNG?raw=true)
 
 ### View Post
-![post-page](./screenshots/view_post.png)
+![post-page](https://github.com/yashwanth1412/Message-Board/blob/master/screenshots/view_post.PNG?raw=true)
 
 ## Scope of Improvement
 
