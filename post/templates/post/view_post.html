@@ -89,6 +89,7 @@
         socket.onopen = (e) => {
             form.submit(e => {
                 e.preventDefault()
+                console.log("testing")
                 socket.send(JSON.stringify({
                     'message' : message.val()
                 }))
