@@ -34,13 +34,27 @@ GOOGLE_SECRET = your_google_secret
 Create media folder in the root directory and add avatar.png (Default proflie pic for user)
 ```
 
-**Run the following commands:**
+**Run the following commands:** (for database)
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-**Run the server using:**
+**Run the server:**
 ```
 python manage.py runserver
 ```
+
+## Screenshots
+
+### Home Page
+![main-page](./screenshots/general.png)
+
+### View Post
+![post-page](./screenshots/view_post.png)
+
+## Scope of Improvement
+
+- Dynamically update number of users liked a post
+- Add attachments (like images, videos) to a post
+- Update UI to make it more user friendly

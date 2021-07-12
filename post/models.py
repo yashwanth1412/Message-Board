@@ -17,8 +17,8 @@ class Post(models.Model):
     content = models.TextField()
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete = models.CASCADE, related_name="posts")
-    liked_users = models.ManyToManyField(User, related_name="liked_posts")
-    grp_name = models.ForeignKey(ClubPost, related_name="group_posts", null=True, on_delete=models.CASCADE)
+    liked_users = models.ManyToManyField(User, related_name="liked_posts", blank=True)
+    grp_name = models.ForeignKey(ClubPost, related_name="group_posts", null=True, on_delete=models.CASCADE, blank=True)
 
     def __str__(self):
         return f"'{self.title}' posted by {self.author.first_name}"
